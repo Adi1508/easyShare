@@ -32,14 +32,14 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button getImage, uploadImage;
+    Button getImage, uploadImage, resetContent;
     ImageView showImage;
     EditText getImageName;
     Bitmap fixBitmap;
-    String imageTag="image_tag";
-    String imageName="image_data";
+    String imageTag = "image_tag";
+    String imageName = "image_data";
 
-    String serverUploadPath="";
+    String serverUploadPath = "";
 
     ProgressDialog progressDialog;
     ByteArrayOutputStream byteArrayOutputStream;
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     OutputStream outputStream;
     BufferedReader bufferedReader;
     StringBuilder stringBuilder;
-    boolean check=true;
+    boolean check = true;
     Uri uri;
 
     private StorageReference mStorageRef;
@@ -63,10 +63,11 @@ public class MainActivity extends AppCompatActivity {
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        getImage = (Button)findViewById(R.id.display);
-        uploadImage = (Button)findViewById(R.id.upload);
-        showImage = (ImageView)findViewById(R.id.imageView);
-        getImageName = (EditText)findViewById(R.id.editText1);
+        getImage = (Button) findViewById(R.id.display);
+        uploadImage = (Button) findViewById(R.id.upload);
+        showImage = (ImageView) findViewById(R.id.imageView);
+        getImageName = (EditText) findViewById(R.id.editText1);
+        resetContent = (Button) findViewById(R.id.reset);
 
         getImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,16 +75,28 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent,"Select Image From Gallery"), 1);
+                startActivityForResult(Intent.createChooser(intent, "Select Image From Gallery"), 1);
             }
         });
 
-        uploadImage.setOnClickListener(new View.OnClickListener(){
+        uploadImage.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 getImageFromEditText = getImageName.getText().toString();
-                uploadImageToServer();
+                if (getImageFromEditText != null && showImage.getDrawable() != null) {
+                    uploadImageToServer();
+                } else {
+                    Toast.makeText(MainActivity.this, "Complete the uploading", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        resetContent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showImage.setImageResource(android.R.color.transparent);
+                getImageName.getText().clear();
             }
         });
     }
@@ -92,29 +105,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode==1 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
-            uri=data.getData();
-            try{
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            uri = data.getData();
+            try {
                 System.out.println(uri);
-                fixBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
+                fixBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                 showImage.setImageBitmap(fixBitmap);
-            }catch(IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void uploadImageToServer(){
+    public void uploadImageToServer() {
 
         StorageReference imageReference = mStorageRef.child(getImageFromEditText);
         //StorageReference imageRef = mStorageRef.child("images/"+getImageFromEditText);
 
         showImage.setDrawingCacheEnabled(true);
         showImage.buildDrawingCache();
-        Bitmap bitmap= showImage.getDrawingCache();
+        Bitmap bitmap = showImage.getDrawingCache();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] imageData=baos.toByteArray();
+        byte[] imageData = baos.toByteArray();
 
         UploadTask uploadTask = imageReference.putBytes(imageData);
         uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -122,16 +135,13 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(@NonNull Exception e) {
 
             }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>(){
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 System.out.println(downloadUrl);
 
-                Toast.makeText(MainActivity.this,"The image is Uploaded", Toast.LENGTH_LONG).show();
-
-                showImage.setImageResource(android.R.color.transparent);
-                getImageName.getText().clear();
+                Toast.makeText(MainActivity.this, "The image is Uploaded", Toast.LENGTH_LONG).show();
             }
         });
     }
