@@ -38,34 +38,20 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button getImage, uploadImage, resetContent;
+    Button getImage, uploadImage, resetContent, imageProcessing;
     ImageView showImage;
     EditText getImageName;
     Bitmap fixBitmap;
-    String imageTag = "image_tag";
-    String imageName = "image_data";
-
-    String serverUploadPath = "";
 
     ProgressDialog progressDialog;
-    ByteArrayOutputStream byteArrayOutputStream;
-    byte[] byteArray;
-    String convertImage;
     String getImageFromEditText = null;
-    HttpURLConnection httpURLConnection;
-    URL url;
-    OutputStream outputStream;
-    BufferedReader bufferedReader;
-    StringBuilder stringBuilder;
-    boolean check = true;
     Uri uri;
-
-    TextView count;
 
     private StorageReference mStorageRef;
     DatabaseReference databaseReference;
 
     public static String databasePath = "uploaded_images_info";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,9 +65,17 @@ public class MainActivity extends AppCompatActivity {
         showImage = (ImageView) findViewById(R.id.imageView);
         getImageName = (EditText) findViewById(R.id.editText1);
         resetContent = (Button) findViewById(R.id.reset);
+        imageProcessing=(Button) findViewById(R.id.imageProcessing);
 
         progressDialog = new ProgressDialog(MainActivity.this);
 
+        imageProcessing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(MainActivity.this, ImageProcessing.class);
+                startActivity(intent);
+            }
+        });
         getImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -174,7 +168,9 @@ public class MainActivity extends AppCompatActivity {
 
         showImage.setDrawingCacheEnabled(true);
         showImage.buildDrawingCache();
+
         Bitmap bitmap = showImage.getDrawingCache();
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         byte[] imageData = baos.toByteArray();
@@ -205,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Toast.makeText(MainActivity.this, "The image is Uploaded", Toast.LENGTH_LONG).show();
 
-                ImageUploadInfo imageUploadInfo=new ImageUploadInfo(getImageFromEditText,taskSnapshot.getDownloadUrl().toString());
+                ImageUploadInfo imageUploadInfo = new ImageUploadInfo(getImageFromEditText, taskSnapshot.getDownloadUrl().toString());
 
                 //in place of id use the name of person such that same person has all the images in a single node
                 String ImageUploadId = databaseReference.push().getKey();

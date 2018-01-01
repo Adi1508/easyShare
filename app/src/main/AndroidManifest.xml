@@ -23,6 +23,7 @@
         </activity>
 
         <activity android:name=".DisplayStorage"/>
+        <activity android:name=".ImageProcessing"/>
     </application>
 
 </manifest>
