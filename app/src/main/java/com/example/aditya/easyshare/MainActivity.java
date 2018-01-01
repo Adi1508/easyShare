@@ -9,16 +9,20 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -45,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     ByteArrayOutputStream byteArrayOutputStream;
     byte[] byteArray;
     String convertImage;
-    String getImageFromEditText;
+    String getImageFromEditText = null;
     HttpURLConnection httpURLConnection;
     URL url;
     OutputStream outputStream;
@@ -53,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     StringBuilder stringBuilder;
     boolean check = true;
     Uri uri;
+
+    TextView count;
 
     private StorageReference mStorageRef;
 
@@ -69,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
         getImageName = (EditText) findViewById(R.id.editText1);
         resetContent = (Button) findViewById(R.id.reset);
 
+        progressDialog = new ProgressDialog(MainActivity.this);
+
         getImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,10 +92,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 getImageFromEditText = getImageName.getText().toString();
-                if (getImageFromEditText != null && showImage.getDrawable() != null) {
-                    uploadImageToServer();
+                System.out.println("getImageFromEditText: " + getImageFromEditText);
+
+                if (getImageFromEditText.matches("")) {
+                    Toast.makeText(MainActivity.this, "Complete the name", Toast.LENGTH_LONG).show();
+                } else if (showImage.getDrawable() == null) {
+                    Toast.makeText(MainActivity.this, "select the image to upload", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(MainActivity.this, "Complete the uploading", Toast.LENGTH_LONG).show();
+                    uploadImageToServer();
                 }
             }
         });
@@ -100,6 +112,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.displayStorage:
+                Toast.makeText(this, "display storage is selected", Toast.LENGTH_LONG).show();
+                return (true);
+            case R.id.exit:
+                finish();
+                return (true);
+
+        }
+        return (super.onOptionsItemSelected(item));
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -119,30 +154,59 @@ public class MainActivity extends AppCompatActivity {
 
     public void uploadImageToServer() {
 
-        StorageReference imageReference = mStorageRef.child(getImageFromEditText);
-        //StorageReference imageRef = mStorageRef.child("images/"+getImageFromEditText);
+        // Setting progressDialog Title.
+        progressDialog.setTitle("Image is Uploading...");
+
+        // Showing progressDialog.
+        progressDialog.show();
+
+        //StorageReference imageReference = mStorageRef.child(getImageFromEditText);
+        StorageReference imageRef = mStorageRef.child("images/" + getImageFromEditText);
 
         showImage.setDrawingCacheEnabled(true);
         showImage.buildDrawingCache();
         Bitmap bitmap = showImage.getDrawingCache();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         byte[] imageData = baos.toByteArray();
 
-        UploadTask uploadTask = imageReference.putBytes(imageData);
+        UploadTask uploadTask = imageRef.putBytes(imageData);
         uploadTask.addOnFailureListener(new OnFailureListener() {
+
             @Override
             public void onFailure(@NonNull Exception e) {
 
+                // Hiding the progressDialog.
+                progressDialog.dismiss();
+
+                // Showing exception erro message.
+                Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+
             }
+
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 System.out.println(downloadUrl);
 
+                // Hiding the progressDialog after done uploading.
+                progressDialog.dismiss();
+
                 Toast.makeText(MainActivity.this, "The image is Uploaded", Toast.LENGTH_LONG).show();
             }
+
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+
+                // Setting progressDialog Title.
+                progressDialog.setTitle("Image is Uploading...");
+
+            }
+
         });
     }
 }
