@@ -22,8 +22,8 @@ import org.json.JSONObject;
 public class ImageProcessing extends AppCompatActivity {
 
     TextView mTextView;
-    String key = "THO9NVu2F9be4zenaJvgeC435hdziNl0";
-    String secret = "gM_p6nlgPlmMFcMSSfkISxhkmm_uYaKM";
+    String key = "";
+    String secret = "";
     String imageURL;
     StringBuffer sb = new StringBuffer();
     JSONObject jsonObject;
@@ -35,7 +35,7 @@ public class ImageProcessing extends AppCompatActivity {
         mTextView = (TextView) findViewById(R.id.mTextView);
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String api = "https://api-us.faceplusplus.com/facepp/v3/detect?api_key=THO9NVu2F9be4zenaJvgeC435hdziNl0&api_secret=gM_p6nlgPlmMFcMSSfkISxhkmm_uYaKM&image_url=https://firebasestorage.googleapis.com/v0/b/kotlinapp-1508.appspot.com/o/groot?alt=media%26token=5c493a46-efa4-4f80-8120-14c5392093ab&return_attributes=gender";
+        String api = "";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, api, new Response.Listener<String>() {
 
