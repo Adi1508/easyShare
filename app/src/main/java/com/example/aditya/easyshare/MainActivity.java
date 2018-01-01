@@ -21,6 +21,8 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -61,13 +63,16 @@ public class MainActivity extends AppCompatActivity {
     TextView count;
 
     private StorageReference mStorageRef;
+    DatabaseReference databaseReference;
 
+    public static String databasePath = "uploaded_images_info";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
+        databaseReference = FirebaseDatabase.getInstance().getReference(databasePath);
 
         getImage = (Button) findViewById(R.id.display);
         uploadImage = (Button) findViewById(R.id.upload);
@@ -126,6 +131,10 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.displayStorage:
                 Toast.makeText(this, "display storage is selected", Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(MainActivity.this, DisplayStorage.class);
+                startActivity(intent);
+
                 return (true);
             case R.id.exit:
                 finish();
@@ -195,6 +204,14 @@ public class MainActivity extends AppCompatActivity {
                 progressDialog.dismiss();
 
                 Toast.makeText(MainActivity.this, "The image is Uploaded", Toast.LENGTH_LONG).show();
+
+                ImageUploadInfo imageUploadInfo=new ImageUploadInfo(getImageFromEditText,taskSnapshot.getDownloadUrl().toString());
+
+                //in place of id use the name of person such that same person has all the images in a single node
+                String ImageUploadId = databaseReference.push().getKey();
+
+                //update the database with the uplaoded images information
+                databaseReference.child(ImageUploadId).setValue(imageUploadInfo);
             }
 
         }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
