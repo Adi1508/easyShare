@@ -12,6 +12,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by aditya on 1/1/18.
  */
@@ -19,11 +22,11 @@ import com.android.volley.toolbox.Volley;
 public class ImageProcessing extends AppCompatActivity {
 
     TextView mTextView;
-    String key = "";
-    String secret = "";
+    String key = "THO9NVu2F9be4zenaJvgeC435hdziNl0";
+    String secret = "gM_p6nlgPlmMFcMSSfkISxhkmm_uYaKM";
     String imageURL;
     StringBuffer sb = new StringBuffer();
-
+    JSONObject jsonObject;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,17 +35,24 @@ public class ImageProcessing extends AppCompatActivity {
         mTextView = (TextView) findViewById(R.id.mTextView);
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String api = "https://api-us.faceplusplus.com/facepp/v3/detect";
+        String api = "https://api-us.faceplusplus.com/facepp/v3/detect?api_key=THO9NVu2F9be4zenaJvgeC435hdziNl0&api_secret=gM_p6nlgPlmMFcMSSfkISxhkmm_uYaKM&image_url=https://firebasestorage.googleapis.com/v0/b/kotlinapp-1508.appspot.com/o/groot?alt=media%26token=5c493a46-efa4-4f80-8120-14c5392093ab&return_attributes=gender";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, api, new Response.Listener<String>() {
+
             @Override
             public void onResponse(String response) {
-                System.out.println(response.toString());
+                try {
+                    jsonObject=new JSONObject(response);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("JSON: "+jsonObject.toString());
                 mTextView.setText("Response is:  " + response.toString());
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                System.out.println("ERROR: "+error);
                 mTextView.setText("api didn't work");
             }
         });

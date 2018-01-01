@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.show();
 
         //StorageReference imageReference = mStorageRef.child(getImageFromEditText);
-        StorageReference imageRef = mStorageRef.child("images/" + getImageFromEditText);
+        StorageReference imageRef = mStorageRef.child(getImageFromEditText);
 
         showImage.setDrawingCacheEnabled(true);
         showImage.buildDrawingCache();
