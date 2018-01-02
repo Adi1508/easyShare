@@ -18,9 +18,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -50,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
     private StorageReference mStorageRef;
     DatabaseReference databaseReference;
 
+    FirebaseAuth firebaseAuth;
+
+    // Google API Client object.
+    public GoogleApiClient googleApiClient;
+
     public static String databasePath = "uploaded_images_info";
 
     @Override
@@ -60,19 +73,21 @@ public class MainActivity extends AppCompatActivity {
         mStorageRef = FirebaseStorage.getInstance().getReference();
         databaseReference = FirebaseDatabase.getInstance().getReference(databasePath);
 
+        firebaseAuth = FirebaseAuth.getInstance();
+
         getImage = (Button) findViewById(R.id.display);
         uploadImage = (Button) findViewById(R.id.upload);
         showImage = (ImageView) findViewById(R.id.imageView);
         getImageName = (EditText) findViewById(R.id.editText1);
         resetContent = (Button) findViewById(R.id.reset);
-        imageProcessing=(Button) findViewById(R.id.imageProcessing);
+        imageProcessing = (Button) findViewById(R.id.imageProcessing);
 
         progressDialog = new ProgressDialog(MainActivity.this);
 
         imageProcessing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(MainActivity.this, ImageProcessing.class);
+                Intent intent = new Intent(MainActivity.this, ImageProcessing.class);
                 startActivity(intent);
             }
         });
@@ -85,6 +100,23 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(Intent.createChooser(intent, "Select Image From Gallery"), 1);
             }
         });
+
+        // Creating and Configuring Google Sign In object.
+        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        // Creating and Configuring Google Api Client.
+        googleApiClient = new GoogleApiClient.Builder(MainActivity.this)
+                .enableAutoManage(MainActivity.this, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+                    }
+                } /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
+                .build();
 
         uploadImage.setOnClickListener(new View.OnClickListener() {
 
@@ -130,12 +162,27 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
 
                 return (true);
-            case R.id.exit:
-                finish();
+            case R.id.signOut:
+                UserSignOutFunction();
                 return (true);
 
         }
         return (super.onOptionsItemSelected(item));
+    }
+
+    public void UserSignOutFunction() {
+
+        // Sing Out the User.
+        firebaseAuth.signOut();
+
+        Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(
+                new ResultCallback() {
+                    @Override
+                    public void onResult(@NonNull Result result) {
+                        Toast.makeText(MainActivity.this, "Logout Successfully", Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+                });
     }
 
 
