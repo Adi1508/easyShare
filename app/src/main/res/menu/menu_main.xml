@@ -7,6 +7,6 @@
         android:id="@+id/displayStorage" android:icon="@android:drawable/ic_dialog_info" app:showAsAction="never" android:title="Display Data From Storage">
     </item>
     <item
-        android:id="@+id/exit"  app:showAsAction="never" android:title="Exit">
+        android:id="@+id/signOut"  app:showAsAction="never" android:title="Sign Out">
     </item>
 </menu>
