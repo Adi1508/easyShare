@@ -74,7 +74,7 @@ public class ImageProcessing extends AppCompatActivity {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            String listData=imageName+" Number of faces detected: " + jsonArray.length();
+                            String listData="Image Name: "+imageName+" ,Number of faces detected: " + jsonArray.length();
                             System.out.println(listData);
                             imagesInfoList.add(listData);
 
