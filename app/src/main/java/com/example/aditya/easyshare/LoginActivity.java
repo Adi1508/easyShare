@@ -1,6 +1,8 @@
+/*
 package com.example.aditya.easyshare;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,9 +26,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+*/
 /**
  * Created by aditya on 2/1/18.
- */
+ *//*
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -43,9 +47,19 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        System.out.println("LoginActivity Started");
+
         signInButton = (SignInButton) findViewById(R.id.signIn);
 
         firebaseAuth = FirebaseAuth.getInstance();
+
+
+        SharedPreferences loginPreferences = getApplicationContext().getSharedPreferences("accesskey", 0);
+        if (loginPreferences.getInt("access", 0) == 0) {
+            SharedPreferences.Editor editor = loginPreferences.edit();
+            editor.putInt("access",0);
+            editor.commit();
+        }
 
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -99,6 +113,12 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                             System.out.println("USER: " + firebaseUser.getDisplayName());
                             System.out.println("EMAIL: " + firebaseUser.getEmail());
+
+                            SharedPreferences sp = getApplicationContext().getSharedPreferences("accesskey", 0);
+                            SharedPreferences.Editor sedt = sp.edit();
+                            sedt.putInt("access", 1);
+                            sedt.commit();
+
                         } else {
                             Toast.makeText(LoginActivity.this, "something's wrong", Toast.LENGTH_LONG).show();
                         }
@@ -109,3 +129,4 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 }
+*/

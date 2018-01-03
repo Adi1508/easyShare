@@ -8,8 +8,11 @@
     android:orientation="vertical"
     tools:context="com.example.aditya.easyshare.ImageProcessing">
 
-    <ListView
-        android:id="@+id/listInfo"
+    <TextView
+        android:id="@+id/label"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:padding="10dip"
+        android:textSize="16dip"
+        android:textStyle="bold"/>
 </LinearLayout>

@@ -59,10 +59,10 @@ public class DisplayStorage extends AppCompatActivity {
 
                 for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
                     ImageUploadInfo imageUploadInfo = postSnapshot.getValue(ImageUploadInfo.class);
-                    System.out.println("ImageUploadINfo "+imageUploadInfo);
+                    System.out.println("ImageUploadINfo "+imageUploadInfo.getImageURL());
                     list.add(imageUploadInfo);
                 }
-
+                System.out.println("list.size(): "+list.size());
                 adapter= new RecyclerViewAdapter(getApplicationContext(),list);
                 recyclerView.setAdapter(adapter);
 

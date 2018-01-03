@@ -2,6 +2,7 @@ package com.example.aditya.easyshare;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -70,6 +71,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        System.out.println("MainActivity Started");
+
+        /*SharedPreferences loginPreferences = getApplicationContext().getSharedPreferences("accesskey", 0);
+
+        if(loginPreferences.getInt("access",0)==0){
+            Intent loginIntent=new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(loginIntent);
+        }
+        */
+
         mStorageRef = FirebaseStorage.getInstance().getReference();
         databaseReference = FirebaseDatabase.getInstance().getReference(databasePath);
 
@@ -101,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Creating and Configuring Google Sign In object.
+       /* // Creating and Configuring Google Sign In object.
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -114,9 +125,9 @@ public class MainActivity extends AppCompatActivity {
                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
                     }
-                } /* OnConnectionFailedListener */)
+                } *//* OnConnectionFailedListener *//*)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
-                .build();
+                .build();*/
 
         uploadImage.setOnClickListener(new View.OnClickListener() {
 
@@ -163,14 +174,16 @@ public class MainActivity extends AppCompatActivity {
 
                 return (true);
             case R.id.signOut:
-                UserSignOutFunction();
+                //UserSignOutFunction();
+                finish();
+                System.exit(0);
                 return (true);
 
         }
         return (super.onOptionsItemSelected(item));
     }
 
-    public void UserSignOutFunction() {
+   /* public void UserSignOutFunction() {
 
         // Sing Out the User.
         firebaseAuth.signOut();
@@ -183,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                         finish();
                     }
                 });
-    }
+    }*/
 
 
     @Override
@@ -202,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //upload image to the firebase storage
     public void uploadImageToServer() {
 
         // Setting progressDialog Title.
@@ -231,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
                 // Hiding the progressDialog.
                 progressDialog.dismiss();
 
-                // Showing exception erro message.
+                // Showing exception error message.
                 Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
 
             }
