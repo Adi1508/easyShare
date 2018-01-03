@@ -46,6 +46,7 @@ public class ImageProcessing extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_process_image);
 
+        listView=findViewById(R.id.listInfo);
         final RequestQueue queue = Volley.newRequestQueue(this);
 
         firebaseDatabase= FirebaseDatabase.getInstance();
@@ -76,8 +77,8 @@ public class ImageProcessing extends AppCompatActivity {
                             String listData=imageName+" Number of faces detected: " + jsonArray.length();
                             System.out.println(listData);
                             imagesInfoList.add(listData);
-                            ArrayAdapter adapter=new ArrayAdapter<>(ImageProcessing.this, R.layout.activity_listview,imagesInfoList);
-                            listView=findViewById(R.id.listInfo);
+
+                            ArrayAdapter adapter=new ArrayAdapter<String>(ImageProcessing.this, R.layout.activity_listview,imagesInfoList);
                             listView.setAdapter(adapter);
                         }
                     }, new Response.ErrorListener() {
