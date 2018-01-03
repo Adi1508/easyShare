@@ -8,6 +8,13 @@
     android:orientation="vertical"
     tools:context="com.example.aditya.easyshare.ImageProcessing">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/image_processing"
+        android:textSize="18dip"
+        android:gravity="center"
+        android:textStyle="bold"/>
     <ListView
         android:id="@+id/listInfo"
         android:layout_width="match_parent"

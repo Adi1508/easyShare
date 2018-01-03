@@ -24,8 +24,8 @@
 
         <activity android:name=".DisplayStorage" />
         <activity android:name=".ImageProcessing" />
-
-        <!--<activity android:name=".LoginActivity"/>-->
+        <activity android:name=".LoginActivity"/>
+        <activity android:name=".LandingActivity"/>
 
     </application>
 

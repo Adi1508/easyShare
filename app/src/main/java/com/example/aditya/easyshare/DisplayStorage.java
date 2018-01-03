@@ -51,7 +51,7 @@ public class DisplayStorage extends AppCompatActivity {
 
         progressDialog.show();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference(MainActivity.databasePath);
+        databaseReference = FirebaseDatabase.getInstance().getReference(LandingActivity.databasePath);
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override

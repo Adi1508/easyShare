@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">easyShare</string>
+    <string name="image_processing">Performing Face Detection On The Images Present In Database</string>
 </resources>
