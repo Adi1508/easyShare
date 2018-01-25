@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">easyShare</string>
     <string name="image_processing">Performing Face Detection On The Images Present In Database</string>
+
+    <string name="name">Enter Name</string>
+    <string name="email">Enter Email</string>
+    <string name="password">Enter Password</string>
 </resources>
