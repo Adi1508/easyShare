@@ -81,21 +81,6 @@ public class LandingActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(LandingActivity.this);
 
-        // Creating and Configuring Google Sign In object.
-        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        // Creating and Configuring Google Api Client.
-        googleApiClient = new GoogleApiClient.Builder(LandingActivity.this)
-                .enableAutoManage(LandingActivity.this, new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                    }
-                })
-                .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
-                .build();
-
         imageProcessing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -158,7 +143,7 @@ public class LandingActivity extends AppCompatActivity {
 
                 return (true);
             case R.id.signOut:
-                UserSignOutFunction();
+                System.out.println("signout button pressed");
                 return (true);
 
         }
@@ -179,24 +164,6 @@ public class LandingActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
-
-    public void UserSignOutFunction() {
-        // Sing Out the User.
-        firebaseAuth.signOut();
-        Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(
-                new ResultCallback() {
-                    @Override
-                    public void onResult(@NonNull Result result) {
-                        SharedPreferences sharedpreferences = getApplicationContext().getSharedPreferences("accesskey", 0);
-                        SharedPreferences.Editor editor = sharedpreferences.edit();
-                        editor.putInt("access",0);
-                        editor.commit();
-                        Toast.makeText(LandingActivity.this, "Logout Successfully", Toast.LENGTH_LONG).show();
-                        Intent intent=new Intent(LandingActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                    }
-                });
     }
 
     //upload image to the firebase storage

@@ -32,13 +32,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginActivity extends AppCompatActivity {
 
-    public static final int RequestSignInCode = 7;
-
     public FirebaseAuth firebaseAuth;
-
-    public GoogleApiClient googleApiClient;
-
-    com.google.android.gms.common.SignInButton signInButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,74 +41,8 @@ public class LoginActivity extends AppCompatActivity {
 
         System.out.println("LoginActivity Started");
 
-        signInButton = (SignInButton) findViewById(R.id.signIn);
-
         firebaseAuth = FirebaseAuth.getInstance();
 
-        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-
-        googleApiClient = new GoogleApiClient.Builder(LoginActivity.this)
-                .enableAutoManage(LoginActivity.this, new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-                    }
-                }).addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
-                .build();
-
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userSignInMethod();
-            }
-        });
-    }
-
-    public void userSignInMethod() {
-        Intent authIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-        startActivityForResult(authIntent, RequestSignInCode);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RequestSignInCode) {
-            GoogleSignInResult googleSignInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-
-            if (googleSignInResult.isSuccess()) {
-                GoogleSignInAccount googleSignInAccount = googleSignInResult.getSignInAccount();
-                FirebaseUserAuth(googleSignInAccount);
-            }
-        }
-    }
-
-    public void FirebaseUserAuth(GoogleSignInAccount googleSignInAccount) {
-        AuthCredential authCredential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
-        Toast.makeText(LoginActivity.this, "" + authCredential.getProvider(), Toast.LENGTH_LONG).show();
-        firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-                    System.out.println("USER: " + firebaseUser.getDisplayName());
-                    System.out.println("EMAIL: " + firebaseUser.getEmail());
-
-                    SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("accesskey", 0);
-                    SharedPreferences.Editor sedit = sharedPreferences.edit();
-                    sedit.putInt("access", 1);
-                    sedit.commit();
-                    System.out.println(sedit.toString());
-                    Intent intent = new Intent(LoginActivity.this, LandingActivity.class);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(LoginActivity.this, "something's wrong", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
     }
 
     @Override
