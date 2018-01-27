@@ -35,27 +35,47 @@
         android:orientation="vertical"
         android:layout_marginTop="70dp">
 
-        <EditText
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/name"
-            android:typeface="monospace"
-            android:hint="@string/name"/>
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:typeface="monospace"
-            android:id="@+id/email"
-            android:hint="@string/email"/>
+            <EditText
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/name"
+                android:inputType="textEmailAddress"
+                android:textColorHint="@android:color/white" />
+        </android.support.design.widget.TextInputLayout>
 
-        <EditText
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/pass"
-            android:typeface="monospace"
-            android:inputType="textPassword"
-            android:hint="@string/password"/>
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                android:textColorHint="@android:color/white" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/pass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:textColorHint="@android:color/white" />
+        </android.support.design.widget.TextInputLayout>
 
     </LinearLayout>
 
