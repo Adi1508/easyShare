@@ -32,7 +32,7 @@ public class RegisterActivity extends AppCompatActivity{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_register);
         System.out.println("LoginActivity Started");
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -83,6 +83,14 @@ public class RegisterActivity extends AppCompatActivity{
                             }
                         });
 
+            }
+        });
+
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(RegisterActivity.this,LoginActivity.class);
+                startActivity(intent);
             }
         });
 
