@@ -144,6 +144,8 @@ public class LandingActivity extends AppCompatActivity {
                 return (true);
             case R.id.signOut:
                 System.out.println("signout button pressed");
+                firebaseAuth.signOut();
+                startActivity(new Intent(LandingActivity.this,LoginActivity.class));
                 return (true);
 
         }

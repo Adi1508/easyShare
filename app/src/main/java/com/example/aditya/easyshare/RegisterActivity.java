@@ -39,7 +39,7 @@ public class RegisterActivity extends AppCompatActivity{
 
         register=findViewById(R.id.register);
         login=findViewById(R.id.login);
-        upload=findViewById(R.id.upload_login);
+        upload=findViewById(R.id.upload_register);
         name=findViewById(R.id.name);
         email=findViewById(R.id.email);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);

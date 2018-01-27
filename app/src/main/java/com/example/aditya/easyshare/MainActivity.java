@@ -48,11 +48,13 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
+    public FirebaseAuth firebaseAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        firebaseAuth=FirebaseAuth.getInstance();
         /*SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("accesskey", 0);
 
         if (sharedPreferences.getInt("access", 0) == 0) {
@@ -69,7 +71,15 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                SharedPreferences sharedPreferences=getSharedPreferences("accesskey",0);
+
+                if(firebaseAuth.getCurrentUser()!=null){
+                    startActivity(new Intent(MainActivity.this, LandingActivity.class));
+                    finish();
+                }else{
+                    Intent intent=new Intent(MainActivity.this, RegisterActivity.class);
+                    startActivity(intent);
+                }
+                //SharedPreferences sharedPreferences=getSharedPreferences("accesskey",0);
 //                if(sharedPreferences.getInt("access",0)==0){
 //                    System.out.println("not logged in");
 //                    Intent intent=new Intent(MainActivity.this, LoginActivity.class);
@@ -80,8 +90,6 @@ public class MainActivity extends AppCompatActivity {
 //                    startActivity(intent);
 //                }
 
-                Intent intent=new Intent(MainActivity.this, RegisterActivity.class);
-                startActivity(intent);
 
             }
         }.start();
