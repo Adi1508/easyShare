@@ -53,13 +53,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("accesskey", 0);
+        /*SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("accesskey", 0);
 
         if (sharedPreferences.getInt("access", 0) == 0) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt("access", 0);
             editor.commit();
-        }
+        }*/
 
         new CountDownTimer(2000,1000){
             @Override
@@ -70,15 +70,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 SharedPreferences sharedPreferences=getSharedPreferences("accesskey",0);
-                if(sharedPreferences.getInt("access",0)==0){
-                    System.out.println("not logged in");
-                    Intent intent=new Intent(MainActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                }else{
-                    System.out.println("logged in");
-                    Intent intent=new Intent(MainActivity.this, LandingActivity.class);
-                    startActivity(intent);
-                }
+//                if(sharedPreferences.getInt("access",0)==0){
+//                    System.out.println("not logged in");
+//                    Intent intent=new Intent(MainActivity.this, LoginActivity.class);
+//                    startActivity(intent);
+//                }else{
+//                    System.out.println("logged in");
+//                    Intent intent=new Intent(MainActivity.this, LandingActivity.class);
+//                    startActivity(intent);
+//                }
+
+                Intent intent=new Intent(MainActivity.this, RegisterActivity.class);
+                startActivity(intent);
+
             }
         }.start();
     }

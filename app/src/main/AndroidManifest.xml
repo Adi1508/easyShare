@@ -27,6 +27,7 @@
         <activity android:name=".DisplayStorage" />
         <activity android:name=".ImageProcessing" />
         <activity android:name=".LoginActivity"/>
+        <activity android:name=".RegisterActivity"/>
         <activity android:name=".LandingActivity"
             android:theme="@style/AppTheme" />
 
