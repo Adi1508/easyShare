@@ -13,18 +13,19 @@
         android:gravity="center">
 
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:id="@+id/face"
+            android:focusableInTouchMode="true"
             android:background="@color/colorAccent"/>
 
-        <Button
+        <!--<Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/upload_register"
+            android:id="@+id/select_register"
             android:gravity="center"
             android:textSize="10dp"
-            android:text="@string/upload"/>
+            android:text="@string/select"/>-->
 
     </LinearLayout>
 
@@ -33,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="70dp">
+        android:layout_marginTop="30dp">
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"

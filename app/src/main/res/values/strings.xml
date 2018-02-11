@@ -7,7 +7,7 @@
     <string name="password">Enter Password</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
-    <string name="upload">Upload Image</string>
+    <string name="select">Select Image</string>
     <string name="btn_login">Login</string>
     <string name="btn_forgot_password">Forgot Password?</string>
     <string name="minimum_password">Password too short, enter minimum 6 characters!</string>

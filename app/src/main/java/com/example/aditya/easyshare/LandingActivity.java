@@ -108,7 +108,7 @@ public class LandingActivity extends AppCompatActivity {
                 if (getImageFromEditText.matches("")) {
                     Toast.makeText(LandingActivity.this, "Complete the name", Toast.LENGTH_LONG).show();
                 } else if (showImage.getDrawable() == null) {
-                    Toast.makeText(LandingActivity.this, "select the image to upload", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LandingActivity.this, "Select the image to upload", Toast.LENGTH_LONG).show();
                 } else {
                     uploadImageToServer();
                 }
@@ -160,7 +160,15 @@ public class LandingActivity extends AppCompatActivity {
             uri = data.getData();
             try {
                 System.out.println(uri);
+
+                //the image is set to image view
                 fixBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+
+                //perform the image compression here
+                /*
+
+                 */
+
                 showImage.setImageBitmap(fixBitmap);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -171,10 +179,7 @@ public class LandingActivity extends AppCompatActivity {
     //upload image to the firebase storage
     public void uploadImageToServer() {
 
-        // Setting progressDialog Title.
         progressDialog.setTitle("Image is Uploading...");
-
-        // Showing progressDialog.
         progressDialog.show();
 
         //StorageReference imageReference = mStorageRef.child(getImageFromEditText);
@@ -183,8 +188,8 @@ public class LandingActivity extends AppCompatActivity {
         showImage.setDrawingCacheEnabled(true);
         showImage.buildDrawingCache();
 
+        //image compression
         Bitmap bitmap = showImage.getDrawingCache();
-
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         byte[] imageData = baos.toByteArray();
