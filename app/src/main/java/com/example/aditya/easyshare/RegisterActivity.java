@@ -23,6 +23,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +36,11 @@ import java.io.IOException;
 import android.net.Uri;
 
 import com.example.aditya.easyshare.ImageCompression;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 /**
  * Created by aditya on 27/1/18.
@@ -44,11 +51,16 @@ public class RegisterActivity extends AppCompatActivity {
 
     public FirebaseAuth firebaseAuth;
     public EditText name, email, password;
-    private Button register, login, select;
+    private Button register, login;
     ProgressBar progressBar;
     public ImageView imageView;
     private Uri uri;
     private Bitmap fixBitmap;
+    ByteArrayOutputStream baos;
+
+    private StorageReference storageReference;
+    DatabaseReference databaseReference;
+    public static String databasePath = "faces";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,7 +69,8 @@ public class RegisterActivity extends AppCompatActivity {
         System.out.println("LoginActivity Started");
 
         firebaseAuth = FirebaseAuth.getInstance();
-
+        storageReference = FirebaseStorage.getInstance().getReference();
+        databaseReference = FirebaseDatabase.getInstance().getReference(databasePath);
         register = findViewById(R.id.register);
         login = findViewById(R.id.login);
         //select = findViewById(R.id.select_register);
@@ -115,6 +128,8 @@ public class RegisterActivity extends AppCompatActivity {
                             }
                         });
 
+
+                uploadImageToServer();
             }
         });
 
@@ -128,6 +143,28 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
+    private void uploadImageToServer() {
+
+        StorageReference imageRef = storageReference.child(name.getText().toString());
+        UploadTask uploadTask=imageRef.putBytes(baos.toByteArray());
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(RegisterActivity.this, "Registration Failed!, Try Again!", Toast.LENGTH_LONG).show();
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                System.out.println("downloadURL:"+ downloadUrl);
+
+                ImageUploadInfo imageUploadInfo=new ImageUploadInfo(name.getText().toString(),taskSnapshot.getDownloadUrl().toString());
+                String imageUploadId=databaseReference.push().getKey();
+                databaseReference.child(imageUploadId).setValue(imageUploadInfo);
+            }
+        });
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -135,7 +172,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             uri = data.getData();
             try {
-                System.out.println("URI: "+ uri);
+                System.out.println("URI: " + uri);
                 //Bitmap pic= (Bitmap) data.getExtras().get("data");
                 //String mDrawableName="myImage";
                 //int resID=getResources().getIdentifier(mDrawableName, "drawable",getPackageName());
@@ -143,8 +180,11 @@ public class RegisterActivity extends AppCompatActivity {
                 //the image is set to image view
                 fixBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                 Bitmap bitmap = fixBitmap;
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+                byte[] imageData = baos.toByteArray();
+
+                Bitmap imageBit = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
 
                 /*Uri tempUri = getImageUri(getApplicationContext(), pic);
                 File finalFile = new File(getRealPathFromUri(tempUri));
@@ -166,7 +206,9 @@ public class RegisterActivity extends AppCompatActivity {
                 /*BitmapFactory.Options opts=new BitmapFactory.Options();
                 opts.inSampleSize=4;
                 Bitmap bitmap=BitmapFactory.decodeResource(getResources(), resID, opts);*/
-                imageView.setImageBitmap(fixBitmap);
+
+                System.out.println("fixbitmap: "+fixBitmap.getByteCount() +" imagebit: "+imageBit.getByteCount());
+                imageView.setImageBitmap(imageBit);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -174,16 +216,16 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    public Uri getImageUri(Context inContext, Bitmap inImage){
-        ByteArrayOutputStream bytes= new ByteArrayOutputStream();
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }
 
-    public String getRealPathFromUri(Uri uri){
+    public String getRealPathFromUri(Uri uri) {
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
         cursor.moveToFirst();
-        int idx=cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
         return cursor.getString(idx);
     }
 

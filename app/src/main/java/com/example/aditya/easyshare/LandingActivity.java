@@ -58,9 +58,6 @@ public class LandingActivity extends AppCompatActivity {
     boolean doubleBackToExitPressedOnce = false;
     FirebaseAuth firebaseAuth;
 
-    // Google API Client object.
-    public GoogleApiClient googleApiClient;
-
     public static String databasePath = "uploaded_images_info";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,6 +85,7 @@ public class LandingActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         getImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
